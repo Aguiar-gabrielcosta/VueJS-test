@@ -1,9 +1,59 @@
 <script setup>
-    const props = defineProps(['n1', 'n2', 'operacao', 'sinalOperacao', 'recuperaOperacao', 'recuperaNumero', 'resultado']);
+    import { reactive } from 'vue'
+
+    const estado = reactive({
+        operacao: 'adicao',
+        sinalOperacao: '+',
+        n1: 0,
+        n2: 0,
+        resultado: 0,
+    })
+
+    function getNumero(evento) {
+        if (evento.target.id === 'n1') {
+            estado.n1 = evento.target.value
+        } else {
+            estado.n2 = evento.target.value
+        }
+    }
+
+    function getOperacao(evento) {
+        estado.operacao = evento.target.value
+
+        switch (estado.operacao) {
+            case 'adicao':
+                estado.sinalOperacao = '+'
+                break;
+            
+            case 'subtracao':
+                estado.sinalOperacao = '-'
+                break;
+
+            case 'multiplicacao':
+                estado.sinalOperacao = 'x'
+                break;
+
+            case 'divisao':
+                estado.sinalOperacao = '/'
+                break;
+        }
+    }
+
+    function calculaResultado() {
+        if (estado.operacao === 'adicao') {
+            return Number(estado.n1) + Number(estado.n2)
+        } else if (estado.operacao === 'subtracao') {
+            return Number(estado.n1) - Number(estado.n2)
+        } else if (estado.operacao === 'multiplicacao') {
+            return Number(estado.n1) * Number(estado.n2)
+        } else if (estado.operacao === 'divisao') {
+            return Number(estado.n1) / Number(estado.n2)
+        }
+    }
 </script>
 
 <template>
-    <select @change="props.recuperaOperacao" class="seletor">
+    <select @change="getOperacao" class="seletor">
         <option value="adicao">Adição</option>
         <option value="subtracao">Subtração</option>
         <option value="multiplicacao">Multiplicação</option>
@@ -12,15 +62,15 @@
     <form>
         <div class="campo">
             <label for="n1">Número 1:</label>
-            <input @change="props.recuperaNumero" @keyup="props.recuperaNumero" id="n1" class="campo--entrada" type="number" value="0" step="1" required>
+            <input @change="getNumero" @keyup="getNumero" id="n1" class="campo--entrada" type="number" value="0" step="1" required>
         </div>
-        <span class="sinal">{{ props.sinalOperacao }}</span>
+        <span class="sinal">{{ estado.sinalOperacao }}</span>
         <div class="campo">
             <label for="n2">Número 2:</label>
-            <input @change="props.recuperaNumero" @keyup="props.recuperaNumero" id="n2" class="campo--entrada" type="number" value="0" step="1" required>
+            <input @change="getNumero" @keyup="getNumero" id="n2" class="campo--entrada" type="number" value="0" step="1" required>
         </div>
         <span>=</span>
-        <span class="resultado">{{ props.resultado }}</span>
+        <span class="resultado">{{ calculaResultado() }}</span>
     </form>
 </template>
 
